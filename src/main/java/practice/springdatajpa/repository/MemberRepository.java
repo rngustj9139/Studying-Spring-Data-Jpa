@@ -13,6 +13,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> { // 인�
 
     List<Member> findHelloBy(); // 다 조회한다. find...By
 
+    List<Member> findTop3HelloBy(); // 3개만 조회한다. find...By
+
+    @Query(name = "Member.findByMembername") // 이 줄 주석처리해도 동작 잘 된다.
     List<Member> findByMembername(@Param("username") String username); // named Query 방식이다 => Member 엔티티에 어노테이션 추가해야한다. (이 기능은 실무에 거의 안쓰인다.) (jpql에 오타 있으면 에플리케이션 로딩시점에 잡아준다.)
 
     @Query("select m from Member m where m.username = :username and m.age = :age") // jpql에 오타 있으면 에플리케이션 로딩시점에 잡아준다.
