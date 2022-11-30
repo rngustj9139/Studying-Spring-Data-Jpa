@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Entity
 @Getter @Setter
 @ToString(of = {"id", "username", "age"}) // 객체를 찍을때 출력해준다.
-@NamedQuery( // 쿼리메소드 방식 말고 NamedQuery 방식이다.
+@NamedQuery( // 메소드 이름으로 인한 쿼리메소드 방식 말고 NamedQuery 방식이다.
         name = "Member.findByMembername",
         query = "select m from Member m where m.username = :username"
 )

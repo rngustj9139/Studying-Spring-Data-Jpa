@@ -3,6 +3,7 @@ package practice.springdatajpa.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import practice.springdatajpa.dto.MemberDto;
 import practice.springdatajpa.entity.Member;
 
 import java.util.List;
@@ -20,5 +21,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> { // 인�
 
     @Query("select m from Member m where m.username = :username and m.age = :age") // jpql에 오타 있으면 에플리케이션 로딩시점에 잡아준다.
     List<Member> findUser(@Param("username") String username, @Param("age") int age); // @Query 방법 (리포지토리 메소드에 쿼리 정의하기) => 이 기능을 실무에서 많이 쓴다.
+
+    @Query("select m.username from Member m") // 단순 값 조회
+    List<String> findUsernameList();
+
+    @Query("select new practice.springdatajpa.dto.MemberDto(m.id, m.username, t.name) from Member m join m.team t") // dto로 조회
+    List<MemberDto> findMemberDto();
 
 }
