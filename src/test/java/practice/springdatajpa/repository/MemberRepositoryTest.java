@@ -5,8 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import practice.springdatajpa.dto.MemberDto;
 import practice.springdatajpa.entity.Member;
+import practice.springdatajpa.entity.Team;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +22,9 @@ class MemberRepositoryTest {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    TeamRepository teamRepository;
 
     @Test
     public void testMember() {
@@ -112,6 +119,54 @@ class MemberRepositoryTest {
         for (String s : usernameList) {
             System.out.println("s = " + s);
         }
+    }
+
+    @Test
+    public void findMemberDto() {
+        Member m1 = new Member("AAA", 10);
+        memberRepository.save(m1);
+
+        Team team = new Team("teamA");
+        m1.setTeam(team);
+        teamRepository.save(team);
+
+        memberRepository.findMemberDto();
+        List<MemberDto> memberDto = memberRepository.findMemberDto();
+
+        for (MemberDto dto : memberDto) {
+            System.out.println("dto = " + dto);
+        }
+    }
+
+    @Test
+    public void findByNames() {
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("BBB", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+        
+        List<Member> byNames = memberRepository.findByNames(Arrays.asList("AAA", "BBB"));
+
+        for (Member byName : byNames) {
+            System.out.println("byName = " + byName);    
+        }
+    }
+
+    @Test
+    public void returnType() {
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("BBB", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        List<Member> aaa1 = memberRepository.findListByUsername("AAA");
+        for (Member member : aaa1) {
+            System.out.println("member = " + member);
+        }
+        Member aaa2 = memberRepository.findMemberByUsername("AAA");
+        System.out.println("aaa2 = " + aaa2);
+        Optional<Member> aaa = memberRepository.findOptionalByUsername("AAA");
+        System.out.println("aaa.get() = " + aaa.get());
     }
 
 }

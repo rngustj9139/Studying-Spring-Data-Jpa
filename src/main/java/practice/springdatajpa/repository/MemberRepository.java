@@ -7,6 +7,7 @@ import practice.springdatajpa.dto.MemberDto;
 import practice.springdatajpa.entity.Member;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> { // 인터페이스만 만들면 구현체는 Spring Data Jpa가 다 만들어서 넣어준다. (@Repository 어노테이션 생략 가능)
 
@@ -27,5 +28,14 @@ public interface MemberRepository extends JpaRepository<Member, Long> { // 인�
 
     @Query("select new practice.springdatajpa.dto.MemberDto(m.id, m.username, t.name) from Member m join m.team t") // dto로 조회
     List<MemberDto> findMemberDto();
+
+    @Query("select m from Member m where m.username in :names") // 컬렉션을 파라미터 바인딩
+    List<Member> findByNames(@Param("names") List<String> names);
+
+    List<Member> findListByUsername(String username); // 컬렉션 조회
+
+    Member findMemberByUsername(String username); // 단건 조회
+
+    Optional<Member> findOptionalByUsername(String username); // 단건 조회(Optional)
 
 }
