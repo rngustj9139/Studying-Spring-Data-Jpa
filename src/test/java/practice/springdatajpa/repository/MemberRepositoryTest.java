@@ -189,6 +189,7 @@ class MemberRepositoryTest {
 
         // when
         Page<Member> page = memberRepository.findByAge(age, pageRequest); // totalCount는 Page를 반환받으면 직접 구할 필요가 없다.
+//      page.map(member -> new MemberDto(member.getId(), member.getUsername()));
 
         // then
         List<Member> content = page.getContent();
