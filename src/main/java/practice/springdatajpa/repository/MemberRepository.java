@@ -1,5 +1,7 @@
 package practice.springdatajpa.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -37,5 +39,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> { // 인�
     Member findMemberByUsername(String username); // 단건 조회
 
     Optional<Member> findOptionalByUsername(String username); // 단건 조회(Optional)
+
+    Page<Member> findByAge(int age, Pageable pageable); // 페이징 수행, Page는 몇번째 페이지인지 적힌 것을 구현할때 사용, Slice는 더보기 버튼만 구현할때만 사용
 
 }

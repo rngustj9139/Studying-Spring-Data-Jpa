@@ -4,6 +4,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import practice.springdatajpa.dto.MemberDto;
 import practice.springdatajpa.entity.Member;
@@ -167,6 +170,38 @@ class MemberRepositoryTest {
         System.out.println("aaa2 = " + aaa2);
         Optional<Member> aaa = memberRepository.findOptionalByUsername("AAA");
         System.out.println("aaa.get() = " + aaa.get());
+    }
+
+    @Test
+    public void paging() {
+        // given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 10));
+        memberRepository.save(new Member("member3", 10));
+        memberRepository.save(new Member("member4", 10));
+        memberRepository.save(new Member("member5", 10));
+
+        // Spring Data Jpa는 페이지가 1부터 시작하는 것이 아닌 0부터 시작한다.
+        // PageRequest의 부모가 Pageable이다.
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+
+        int age = 10;
+
+        // when
+        Page<Member> page = memberRepository.findByAge(age, pageRequest); // totalCount는 Page를 반환받으면 직접 구할 필요가 없다.
+
+        // then
+        List<Member> content = page.getContent();
+        long totalElements = page.getTotalElements(); // totalCount 구하기 (Slice는 totalCount를 구하는 기능 없음)
+        int number = page.getNumber(); // 페이지 번호 가져오기
+        int totalPages = page.getTotalPages();// 전체 페이지 개수 구하기 (Slice는 totalCount를 구하는 기능 없음)
+
+        Assertions.assertThat(content.size()).isEqualTo(3);
+        Assertions.assertThat(totalElements).isEqualTo(5);
+        Assertions.assertThat(number).isEqualTo(0);
+        Assertions.assertThat(totalPages).isEqualTo(2);
+        Assertions.assertThat(page.isFirst()).isTrue(); // 첫번째 페이지인지 알아내기
+        Assertions.assertThat(page.hasNext()).isTrue(); // 다음 페이지가 있는지 알아내기
     }
 
 }
