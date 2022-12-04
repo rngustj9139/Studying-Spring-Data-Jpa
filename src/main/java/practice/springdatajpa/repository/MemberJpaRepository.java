@@ -1,5 +1,6 @@
 package practice.springdatajpa.repository;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import practice.springdatajpa.entity.Member;
 

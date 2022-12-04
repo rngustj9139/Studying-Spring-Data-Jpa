@@ -2,6 +2,7 @@ package practice.springdatajpa.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -47,8 +48,16 @@ public interface MemberRepository extends JpaRepository<Member, Long> { // 인�
             countQuery = "select count(m) from Member m") // 조인할 경우 totalCount를 구하는 쿼리에서도 조인이 일어나지 않게 분리 countQuery = "~" 안쓰면 성능 저하됨
     Page<Member> findHelloByAge(int age, Pageable pageable); // 페이징 수행, Page는 몇번째 페이지인지 적힌 것을 구현할때 사용, Slice는 더보기 버튼만 구현할때만 사용
 
+//  @Modifying(clearAutomatically = true) // 벌크연산을 한뒤 영속성 컨텍스트를 clear하고 싶을때 사용
     @Modifying // executeUpdate 실행
     @Query("update Member m set m.age = m.age + 1 where m.age >= :age") // 벌크 연산
     int bulkAgePlus(@Param("age") int age); // 변경된 데이터의 수를 반환
+
+    @Query("select m from Member m join fetch m.team") // 그냥 findAll()함수는 N + 1문제가 발생하므로 이 함수는 N + 1 문제를 해결하기 위한 페치 조인을 사용함
+    List<Member> findMemberFetchJoin();
+
+    @Override // 메서드 오버라이딩
+    @EntityGraph(attributePaths = {"team"}) // 그냥 findAll을 사용할경우 N + 1 문제가 발생하기 때문에 EntityGraph기능을 사용 (페치 조인과 결과 똑같음)
+    List<Member> findAll();
 
 }
