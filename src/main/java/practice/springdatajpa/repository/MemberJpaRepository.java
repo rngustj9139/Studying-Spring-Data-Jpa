@@ -60,4 +60,10 @@ public class MemberJpaRepository {
                 .getSingleResult();
     }
 
+    public int bulkAgePlus(int age) { // 벌크 연산
+        return em.createQuery("update Member m set m.age = m.age + 1 where m.age >= :age")
+                .setParameter("age", age)
+                .executeUpdate(); // 변경된 칼럼 수가 리턴된다.
+    }
+
 }

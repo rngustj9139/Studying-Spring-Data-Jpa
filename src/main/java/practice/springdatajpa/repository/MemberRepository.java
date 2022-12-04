@@ -3,6 +3,7 @@ package practice.springdatajpa.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import practice.springdatajpa.dto.MemberDto;
@@ -45,5 +46,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> { // 인�
     @Query(value = "select m from Member m left join m.team t",
             countQuery = "select count(m) from Member m") // 조인할 경우 totalCount를 구하는 쿼리에서도 조인이 일어나지 않게 분리 countQuery = "~" 안쓰면 성능 저하됨
     Page<Member> findHelloByAge(int age, Pageable pageable); // 페이징 수행, Page는 몇번째 페이지인지 적힌 것을 구현할때 사용, Slice는 더보기 버튼만 구현할때만 사용
+
+    @Modifying // executeUpdate 실행
+    @Query("update Member m set m.age = m.age + 1 where m.age >= :age") // 벌크 연산
+    int bulkAgePlus(@Param("age") int age); // 변경된 데이터의 수를 반환
 
 }
