@@ -248,4 +248,30 @@ class MemberRepositoryTest {
         }
     }
 
+    @Test
+    public void queryHint() {
+        Member member1 = new Member("member1", 10);
+        memberRepository.save(member1);
+        em.flush();
+        em.clear();
+
+        Member findMember = memberRepository.findById(member1.getId()).get();
+        // 변경 감지로 flush할때 업데이트 쿼리가 나감 but 1차캐시에 원본엔티티와 변경된엔티티 두개가 들어가있기 때문에 메모리를 더 먹음 but 최적화 가능(읽기용으로만 쓴다고 jpa hint 이용)
+        findMember.setUsername("member2");
+        em.flush();
+    }
+
+    @Test
+    public void queryHint2() {
+        Member member1 = new Member("member1", 10);
+        memberRepository.save(member1);
+        em.flush();
+        em.clear();
+
+        Member findMember = memberRepository.findReadOnlyByUsername(member1.getUsername());
+        // 변경 감지로 flush할때 업데이트 쿼리가 나감 but 1차캐시에 원본엔티티와 변경된엔티티 두개가 들어가있기 때문에 메모리를 더 먹음 but 최적화 가능(읽기용으로만 쓴다고 jpa hint 이용)
+        findMember.setUsername("member2"); // readOnly로 세팅했기 때문에 변경감지가 작동하지 않는다.
+        em.flush();
+    }
+
 }

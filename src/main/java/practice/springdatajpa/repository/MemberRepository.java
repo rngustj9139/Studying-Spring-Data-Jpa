@@ -2,14 +2,12 @@ package practice.springdatajpa.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import practice.springdatajpa.dto.MemberDto;
 import practice.springdatajpa.entity.Member;
 
+import javax.persistence.QueryHint;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,5 +57,14 @@ public interface MemberRepository extends JpaRepository<Member, Long> { // 인�
     @Override // 메서드 오버라이딩
     @EntityGraph(attributePaths = {"team"}) // 그냥 findAll을 사용할경우 N + 1 문제가 발생하기 때문에 EntityGraph기능을 사용 (페치 조인과 결과 똑같음)
     List<Member> findAll();
+
+    @EntityGraph(attributePaths = {"team"})
+    @Query("select m from Member m")
+    List<Member> findMemberEntityGraph();
+
+    // 변경 감지로 flush할때 업데이트 쿼리가 나감 but 1차캐시에 원본엔티티와 변경된엔티티 두개가 들어가있기 때문에
+    // 메모리를 더 먹음 but 최적화 가능(읽기용으로만 쓴다고 jpa hint 이용)
+    @QueryHints(value = @QueryHint(name = "org.hibernate.readOnly", value = "true"))
+    Member findReadOnlyByUsername(String username);
 
 }
