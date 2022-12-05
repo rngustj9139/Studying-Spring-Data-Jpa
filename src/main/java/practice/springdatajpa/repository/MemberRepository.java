@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import practice.springdatajpa.dto.MemberDto;
 import practice.springdatajpa.entity.Member;
 
+import javax.persistence.LockModeType;
 import javax.persistence.QueryHint;
 import java.util.List;
 import java.util.Optional;
@@ -66,5 +67,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> { // 인�
     // 메모리를 더 먹음 but 최적화 가능(읽기용으로만 쓴다고 jpa hint 이용)
     @QueryHints(value = @QueryHint(name = "org.hibernate.readOnly", value = "true"))
     Member findReadOnlyByUsername(String username);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE) // jpa가 제공하는 Lock 기능을 이용할 수 있다. but Lock에 대한 자세한 설명은 안하심
+    List<Member> findLockByUsername(String username);
 
 }
