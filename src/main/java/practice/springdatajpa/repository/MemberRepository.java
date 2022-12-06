@@ -12,7 +12,7 @@ import javax.persistence.QueryHint;
 import java.util.List;
 import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member, Long> { // 인터페이스만 만들면 구현체는 Spring Data Jpa가 다 만들어서 넣어준다. (@Repository 어노테이션 생략 가능)
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom { // 인터페이스만 만들면 구현체는 Spring Data Jpa가 다 만들어서 넣어준다. (@Repository 어노테이션 생략 가능)
 
     List<Member> findByUsernameAndAgeGreaterThan(String username, int age); // (커스텀 기능 개발 - 쿼리 메서드) 구현하지 않아도 Spring Data Jpa가 자동으로 구현해줌 => 메서드 이름으로 쿼리 생성
 
