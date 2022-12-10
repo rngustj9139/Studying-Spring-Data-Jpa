@@ -17,7 +17,7 @@ public class SpringDataJpaApplication {
 		SpringApplication.run(SpringDataJpaApplication.class, args);
 	}
 
-	@Bean
+	@Bean // createdBy나 lastModifiedBy에 어떤 값을 저장할지 지정
 	public AuditorAware<String> auditorAware() {
 		return () -> Optional.of(UUID.randomUUID().toString());
 	}
