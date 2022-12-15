@@ -74,4 +74,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
 
     List<UsernameOnly> findProjectionsByUsername(@Param("username") String username); // UsernameOnly은 우리가 만든 인터페이스(엔티티가 아닌 dto를 불러오고 싶을때 사용) - 이를 projection이라 한다.
 
+    @Query(value = "select * from member where username = ?", nativeQuery = true) // 네이티브 쿼리 사용
+    Member findByNativeQuery(String username);
+
 }
