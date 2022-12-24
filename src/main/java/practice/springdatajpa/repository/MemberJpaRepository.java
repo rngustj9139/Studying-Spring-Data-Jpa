@@ -47,6 +47,12 @@ public class MemberJpaRepository {
         em.remove(member);
     }
 
+    public List<Member> findByUsername(String username) {
+        return em.createNamedQuery("Member.findByUsername", Member.class)
+                .setParameter("username", username)
+                .getResultList();
+    }
+
     public List<Member> findByPage(int age, int offset, int limit) { // 순수 JPA 페이징과 정렬
         return em.createQuery("select m from Member m where m.age = :age order by m.username desc", Member.class)
                     .setParameter("age", age)
