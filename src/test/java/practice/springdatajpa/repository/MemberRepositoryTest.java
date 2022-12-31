@@ -98,7 +98,7 @@ class MemberRepositoryTest {
         memberRepository.save(m1);
         memberRepository.save(m2);
 
-        List<Member> result = memberRepository.findByMembername("AAA");
+        List<Member> result = memberRepository.findByUsername("AAA");
         Member findedMember = result.get(0);
         Assertions.assertThat(findedMember).isEqualTo(m1);
     }
@@ -198,6 +198,7 @@ class MemberRepositoryTest {
 
         // then
         List<Member> content = page.getContent();
+//      Slice<Member> content = page.getContent();
         long totalElements = page.getTotalElements(); // totalCount 구하기 (Slice는 totalCount를 구하는 기능 없음)
         int number = page.getNumber(); // 페이지 번호 가져오기
         int totalPages = page.getTotalPages();// 전체 페이지 개수 구하기 (Slice는 totalCount를 구하는 기능 없음)

@@ -24,7 +24,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     List<Member> findTop3HelloBy(); // 3개만 조회한다. find...By
 
     @Query(name = "Member.findByUsername") // 이 줄 주석처리해도 동작 잘 된다.
-    List<Member> findByMembername(@Param("username") String username); // named Query 방식이다 => Member 엔티티에 어노테이션 추가해야한다. (이 기능은 실무에 거의 안쓰인다.) (jpql에 오타 있으면 에플리케이션 로딩시점에 잡아준다.)
+    List<Member> findByUsername(@Param("username") String username); // named Query 방식이다 => Member 엔티티에 어노테이션 추가해야한다. (이 기능은 실무에 거의 안쓰인다.) (jpql에 오타 있으면 에플리케이션 로딩시점에 잡아준다.)
 
     @Query("select m from Member m where m.username = :username and m.age = :age") // jpql에 오타 있으면 에플리케이션 로딩시점에 잡아준다.
     List<Member> findUser(@Param("username") String username, @Param("age") int age); // @Query 방법 (리포지토리 메소드에 쿼리 정의하기) => 이 기능을 실무에서 많이 쓴다.
@@ -46,6 +46,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
 
     Page<Member> findByAge(int age, Pageable pageable); // 페이징 수행, Page는 몇번째 페이지인지 적힌 것을 구현할때 사용, Slice는 더보기 버튼만 구현할때만 사용
 
+    // 페이징할 데이터가 많으면 성능면에서 최적화가 필요함
     @Query(value = "select m from Member m left join m.team t",
             countQuery = "select count(m) from Member m") // 조인할 경우 totalCount를 구하는 쿼리에서도 조인이 일어나지 않게 분리 countQuery = "~" 안쓰면 성능 저하됨
     Page<Member> findHelloByAge(int age, Pageable pageable); // 페이징 수행, Page는 몇번째 페이지인지 적힌 것을 구현할때 사용, Slice는 더보기 버튼만 구현할때만 사용
@@ -65,6 +66,9 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     @EntityGraph(attributePaths = {"team"})
     @Query("select m from Member m")
     List<Member> findMemberEntityGraph();
+
+    @EntityGraph(attributePaths = {"team"})
+    List<Member> findEntityGraphByUsername(@Param("username") String username);
 
     // 변경 감지로 flush할때 업데이트 쿼리가 나감 but 1차캐시에 원본엔티티와 변경된엔티티 두개가 들어가있기 때문에
     // 메모리를 더 먹음 but 최적화 가능(읽기용으로만 쓴다고 jpa hint 이용)

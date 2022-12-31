@@ -47,7 +47,7 @@ public class MemberJpaRepository {
         em.remove(member);
     }
 
-    public List<Member> findByUsername(String username) {
+    public List<Member> findByUsername(String username) { // NamedQuery 적용
         return em.createNamedQuery("Member.findByUsername", Member.class)
                 .setParameter("username", username)
                 .getResultList();
