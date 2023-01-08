@@ -32,7 +32,7 @@ public class MemberController {
         return member.getUsername();
     }
 
-    @GetMapping("/members") // localhost:8080/members/page=0 하면 데이터를 20개 까지만 가져온다. localhost:8080/members/page=0&size=3 하면 3개만 가져온다. localhost:8080/members?page=0&size=3&sort=id.desc 도 가능
+    @GetMapping("/members") // localhost:8080/members?page=0 하면 데이터를 20개 까지만 가져온다. localhost:8080/members/page=0&size=3 하면 3개만 가져온다. localhost:8080/members?page=0&size=3&sort=id.desc 도 가능
     public Page<Member> list(Pageable pageable) { // application.yml에서 pageable 사이즈 전역설정 가능
         Page<Member> page = memberRepository.findAll(pageable);
 
